@@ -26,9 +26,6 @@ with open ("datos/sales_sample_2024.csv", "r") as f:
         total += ventas
         cont += 1
 
-        if fecha == "2024-01-01" or fecha == "2024-02-01":
-            print(f"DEBUG: Detectada línea {fecha} con ventas {ventas}")
-
         #maximo y minimo
         if max_ventas is None or ventas > max_ventas:
             max_ventas = ventas
@@ -58,4 +55,64 @@ with open ("resultados/resultados.txt", "w") as f:
     f.write("\n") #salto de linea para que no este toda la informacion junta
     f.write("Ventas por mes:\n")
     for mes, total_por_mes in ventas_por_mes.items():
-        f.write(f"{mes}: {total_por_mes}\n")    
+        f.write(f"{mes}: {total_por_mes}\n")
+#Parte de la generacion del grafico
+
+#creamos el archivo en el cual se va a guardar
+with open ("resultados/grafico_ventas.txt", "w") as fg:
+  fg.write("==========================================================\n")
+  fg.write("    DIAGRAMA DE BARRAS - EVOLUCION DE VENTAS MENSUALES    \n")
+  fg.write("==========================================================\n")
+  fg.write("\n")
+
+  #Encontrar el mes con mayor facturacion con un for y comparando con condicionales
+  max_facturacion_mes = 0
+  mes_max_facturacion = ""
+  long_max_barras = 40
+  for i in ventas_por_mes:
+    if ventas_por_mes[i] > max_facturacion_mes:
+      max_facturacion_mes = ventas_por_mes[i]
+      mes_max_facturacion = i
+    
+  #Generamos el diagrama de barras
+  for mes, total_mes in sorted(ventas_por_mes.items()):
+     if mes == "Enero":
+        num_mes = 1
+     elif mes == "Febrero":
+        num_mes = 2
+     elif mes == "Marzo":
+        num_mes = 3
+     elif mes == "Abril":
+        num_mes = 4
+     elif mes == "Mayo":
+        num_mes = 5
+     elif mes == "Junio":
+        num_mes = 6
+     elif mes == "Julio":
+        num_mes = 7
+     elif mes == "Agosto":
+        num_mes = 8
+     elif mes == "Septiembre":
+        num_mes = 9
+     elif mes == "Octubre":
+        num_mes = 10
+     elif mes == "Noviembre":
+        num_mes = 11
+     elif mes == "Diciembre":
+        num_mes = 12
+     nombre_mes = nombres_meses[num_mes]
+
+     #Regla de 3 simple para calcular el tamaño de la barra
+     proporcion = total_mes / max_facturacion_mes
+     tamaño_barra = int(proporcion * long_max_barras)
+     barra_visual = "#" * tamaño_barra
+
+     #Mostramos y escribimos las barras en el archivo
+     fg.write(f"{nombre_mes}: {barra_visual}\n")
+     fg.write(f"Ventas: {total_mes}\n")
+     fg.write("\n")
+    
+  fg.write("====================================================================\n")
+  fg.write("  NOTA: Se calcula el grafico en base al mes con mayor facturacion  \n")
+  fg.write("====================================================================\n")
+
